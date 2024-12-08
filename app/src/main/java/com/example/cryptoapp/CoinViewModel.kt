@@ -32,9 +32,16 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadData() {
         val disposable = ApiFactory.apiService.getTopCoinsInfo(limit = 50)
-            .map { it.data?.map { it.coinInfo?.name }?.joinToString(",") }
+            .doOnSubscribe { Log.d("LOAD_DATA", "Fetching top coins info") }
+            .doOnError { Log.e("LOAD_DATA", "Error fetching top coins info: ${it.message}", it) }
+            .map {
+                it.data?.map { it.coinInfo?.name }?.joinToString(",")
+            }
+            .doOnSuccess { Log.d("LOAD_DATA", "Top coins: $it") }
             .flatMap { ApiFactory.apiService.getFullPriceList(fSyms = it) }
+            .doOnError { Log.e("LOAD_DATA", "Error fetching price list: ${it.message}", it) }
             .map { getPriceListFromRawData(it) }
+            .doOnSuccess{ Log.d("LOAD_DATA", "Parsed price list: $it") }
             .delaySubscription(10, TimeUnit.SECONDS)
             .repeat()
             .retry()
@@ -43,7 +50,7 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
                 db.coinPriceInfoDao().insertPriceList(it)
                 Log.d("TEST_OF_LOADING_DATA", "Success: $it")
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "Failure: ${it.message}")
+                Log.e("TEST_OF_LOADING_DATA", "Failure: ${it.message}", it)
             })
         compositeDisposable.add(disposable)
     }
