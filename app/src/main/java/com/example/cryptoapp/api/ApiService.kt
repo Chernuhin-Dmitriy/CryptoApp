@@ -10,14 +10,14 @@ interface ApiService {
 
     @GET("top/totalvolfull")
     fun getTopCoinsInfo(
-        @Query(QUERY_PARAM_API_KEY) apiKey: String = "",
+        @Query(QUERY_PARAM_API_KEY) apiKey: String = "79c11273f1fc6a02d8c2b2d0c1c694b23360cc1f3b241a18b28153c904cc69e0",
         @Query(QUERY_PARAM_LIMIT) limit: Int = 10,
         @Query(QUERY_PARAM_TO_SYMBOL) tSym: String = CURRENCY
     ): Single<CoinInfoListOfData>
 
     @GET("pricemultifull")
     fun getFullPriceList(
-        @Query(QUERY_PARAM_API_KEY) apiKey: String = "",
+        @Query(QUERY_PARAM_API_KEY) apiKey: String = "79c11273f1fc6a02d8c2b2d0c1c694b23360cc1f3b241a18b28153c904cc69e0",
         @Query(QUERY_PARAM_FROM_SYMBOLS) fSyms: String,
         @Query(QUERY_PARAM_TO_SYMBOLS) tSyms: String = CURRENCY
     ): Single<CoinPriceInfoRawData>
