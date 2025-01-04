@@ -6,17 +6,22 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_coin_detail.*
+//import kotlinx.andorid.synthetic.main.activity_coin_detail.*
 
 
 class CoinDetailActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityCoinDetailBinding
     private lateinit var viewModel: CoinViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_coin_detail)
+        binding = ActivityCoinDetailBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         if (!intent.hasExtra(EXTRA_FROM_SYMBOL)) {
             finish()
             return
@@ -24,14 +29,14 @@ class CoinDetailActivity : AppCompatActivity() {
         val fromSymbol = intent.getStringExtra(EXTRA_FROM_SYMBOL) ?: ""
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
         viewModel.getDetailInfo(fromSymbol).observe(this, Observer {
-            tvPrice.text = it.price
-            tvMinPrice.text = it.lowDay
-            tvMaxPrice.text = it.highDay
-            tvLastMarket.text = it.lastMarket
-            tvLastUpdate.text = it.getFormattedTime()
-            tvFromSymbol.text = it.fromSymbol
-            tvToSymbol.text = it.toSymbol
-            Picasso.get().load(it.getFullImageUrl()).into(ivLogoCoin)
+            binding.tvPrice.text = it.price
+            binding.tvMinPrice.text = it.lowDay
+            binding.tvMaxPrice.text = it.highDay
+            binding.tvLastMarket.text = it.lastMarket
+            binding.tvLastUpdate.text = it.getFormattedTime()
+            binding.tvFromSymbol.text = it.fromSymbol
+            binding.tvToSymbol.text = it.toSymbol
+            Picasso.get().load(it.getFullImageUrl()).into(binding.ivLogoCoin)
         })
     }
 
